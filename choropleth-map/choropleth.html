@@ -1,0 +1,96 @@
+<!DOCTYPE html>
+<meta charset="utf-8">
+<head>
+    <!-- add title -->
+    <!-- import required libraries here -->
+
+    
+    <script type="text/javascript" src="../lib/d3.v5.min.js"></script>
+    <script type="text/javascript" src="../lib/topojson.v2.min.js"></script>
+    <script type="text/javascript" src="../lib/d3-tip.min.js"></script>
+    <script type="text/javascript" src="../lib/d3-geo-projection.v2.min.js"></script>
+    <script type="text/javascript" src="../lib/d3-legend.min.js"></script>
+    <script type="application/javascript" src="choropleth.js"></script>
+
+
+    <style>
+        /* define CSS rules here */
+    
+    </style>
+
+    <title></title>
+</head>
+
+
+<body>
+    <!-- Add heading for the visualization -->
+    
+    <!-- Create dropdown element here. Options should be added after reading in game file, they should not be created here.-->
+    
+        Select Board Game: <select id="gameDropdown"></select>
+
+    <!-- append visualization svg to this div-->
+    
+
+<script>
+
+
+    // enter code to define margin and dimensions for svg
+    var margin = {top: 100, right: 50, bottom: 100, left: 10};
+    var width = 1000 - margin.left - margin.right;
+    var height = 700 - margin.top - margin.bottom;
+
+
+    // enter code to create svg
+    var svg = d3.select("body")
+        .append("svg")
+        .attr("id", "choropleth")
+        .attr("transform", "translate(" + margin.left + "," + margin.top + ")")
+        .attr("height", height)
+        .attr("width", width);
+
+
+    // enter code to create color scale
+    const colors = d3.schemeReds[4];
+
+    // enter code to define tooltip
+    const tip = d3.tip()
+        .attr("id", "tooltip")
+        .attr("offset", [-1, 0])
+        .html(function (d) {
+            return `<strong>Country: </strong><span class="details">${d.properties.name}<br></span>
+                    <strong>Game: </strong><span class="details">${d.game}<br/></span>
+                    <strong>Number of Users: </strong><span class="details">${d.users}<br/></span>
+                    <strong>Avg Rating: </strong><span class="details">${d.rating}<br/></span>`
+        });
+
+    svg.call(tip);
+
+    // enter code to define projection and path required for Choropleth
+    // For grading, set the name of functions for projection and path as "projection" and "path"
+    var projection = d3.geoRobinson();
+    var path = d3.geoPath(projection);
+
+    // define any other global variables
+    Promise.all([
+        // enter code to read files
+        d3.json("world_countries.json"),
+        d3.csv("ratings-by-country.csv")
+    ]).then(
+        // enter code to call ready() with required arguments
+        data => ready(null, data[0], data[1])
+    );
+
+
+    var gtid = d3.select("body").append("text")
+        .attr("id", "credit")
+        .text("hhong96")
+        .attr("text-anchor", "middle")
+        .attr("font-size", "12px");
+
+</script>
+
+
+</body>
+
+</html>
